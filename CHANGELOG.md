@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.2.0
+
+### New features
+- Overall scale (`scale` in `Pie.qml`, default 1.0): uniformly scales the whole pie - rings and center hole together; screen-fit shrinking still applies so it fits on small screens.
+- Ring size mode (`sizeMode` in `Pie.qml`): default "thickness": constant ring thickness -> overall pie size grows when a second ring is added, multi-ring pies no longer shrink their rings as the window count grows.; or "size" for a constant overall pie size as rings are added (rings shrink to size as window count grows beyond 8)
+- Release-outside behavior (`releaseOutside` in `Pie.qml`, default "activateLast", previous behavior): what releasing Alt outside the pie does - activate the last selected window, or with "keepFocused" keep the previously focused one (also applies over the center hole).
+- Updated `default` value of `centerOnScreen` to `true` (reflecting the actual status of codebase in `Pie.qml`)
+
+### Changes
+- Removed the per-window size taper from ≤1.1 (the pie shrank ~3% for every window beyond 4, down to a 0.55× floor). The taper reduced hover-target width and thumbnail size exactly when there were more windows to distinguish - it was an occlusion heuristic rather than an ergonomics model, and made the pie non-monotonic (a 9-window pie rendered larger than a 16-window one). Sizing is now uniform at any window count: ring thickness scales only via `scale` and screen-fit clamping, so targets stay as large as possible while `maxPerRing=8` guarantees ≥45° per slice. Occlusion on many-window desktops is handled by the 95% screen-fit clamp and the semi-transparent background instead of shrinking the pie.
+
+### Bug fixes
+- Closing a window with middle mouse button while open drops a ring (e.g. 9→8 windows), the bug here is that the pie used to jump off-center; the pie is now re-positioned on that resize instead of shrinking in place from its top-left corner, so `centerOnScreen` stays respected and it no longer jumps off-center.
+
 ## 1.1.0
 
 ### New feature

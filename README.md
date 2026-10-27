@@ -101,7 +101,7 @@ Not tested on other Plasma 6.x point releases - reports welcome.
 
 ## Tuning
 
-Edit `contents/ui/Pie.qml` to change visual defaults:
+Edit `contents/ui/Pie.qml` to change defaults:
 
 | Property | Default | What it does |
 |----------|---------|--------------|
@@ -110,7 +110,10 @@ Edit `contents/ui/Pie.qml` to change visual defaults:
 | `minimizedOpacity` | 0.7 | Opacity of minimized windows |
 | `bgAlpha` | 0.72 | Background disc transparency |
 | `captionFontScale` | 1.5 | Caption font size multiplier |
-| `centerOnScreen` | false | Center the pie on screen instead of on cursor |
+| `centerOnScreen` | true | Center the pie on screen instead of on cursor |
+| `scale` | 1.0 | Overall scale of the whole pie (rings + center hole) |
+| `sizeMode` | "thickness" | "thickness" = constant ring thickness, "size" = constant overall pie size |
+| `releaseOutside` | "activateLast" | "keepFocused" (do nothing, like pressing ESC) or "activateLast" (hightlight and activate last hovered piece) — what releasing Alt outside the pie does |
 
 Or override in `main.qml` on the `Pie` instance:
 ```qml
@@ -148,6 +151,7 @@ contents/ui/
 
 - Hit-testing reads static ring geometry, not animated/per-frame positions - prevents hover jitter when the hovered piece scales up
 - Multi-ring distribution uses a remainder algorithm (`computeRingPieces()`); windows fill rings evenly (max 8/ring), remainder goes to outer rings
+- Sizing is uniform at any window count - scaled only by `scale` and screen-fit clamping, never tapered per window, so hover targets stay as large as possible; `maxPerRing=8` keeps every slice ≥45° wide
 - Single-window mode caps the slice at 180° (a full 360° circle is degenerate)
 - Icon sizing uses `Kirigami.Units` and tapers on narrow slices
 - Background, captions, selection indicator, and fade animation use Kirigami theme colors
